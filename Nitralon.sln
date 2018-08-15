@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2015
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nitralon", "Nitralon\Nitralon.csproj", "{D0D641F6-B519-4CDD-A645-A7B4BD86B8CE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D0D641F6-B519-4CDD-A645-A7B4BD86B8CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0D641F6-B519-4CDD-A645-A7B4BD86B8CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0D641F6-B519-4CDD-A645-A7B4BD86B8CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0D641F6-B519-4CDD-A645-A7B4BD86B8CE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3B32151F-B9E6-46E2-84CA-EFF18D925572}
+	EndGlobalSection
+EndGlobal
