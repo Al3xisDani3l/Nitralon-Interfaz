@@ -63,19 +63,24 @@ namespace Nitralon
             RadioBoton_Inteligencia.IsChecked = true;
             Menus(configuracionInterna.ModoDeEscaneo);
             Boton_EmpezarEscaneo.IsEnabled = false;
+          
         }
+
+       
 
         #region Procedimientos de los botones
 
-      
+
 
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+           
             this.DragMove();
         }
 
         private void Boton_Cerrar_Click(object sender, RoutedEventArgs e)
         {
+         
             this.Close();
         }
 
@@ -198,6 +203,7 @@ namespace Nitralon
 
         private void txt_ValorMinimo_TextChanged(object sender, TextChangedEventArgs e)
         {
+           
             if (ComprobarFormato(txt_ValorMinimo, Boton_EmpezarEscaneo,false))
             {
                 ComprobacionDeDatos(configuracionInterna.ModoDeEscaneo);

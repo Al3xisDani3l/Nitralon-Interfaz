@@ -23,7 +23,7 @@ namespace Nitralon
         {
             get
             {
-                return buffer(Entradas, Salidas);
+                return Buffer(Entradas, Salidas);
             }
         }
 
@@ -267,7 +267,7 @@ namespace Nitralon
 
         }
 
-        private DataTable buffer (List<double[]> entradas, List<double[]> salidas)
+        private DataTable Buffer (List<double[]> entradas, List<double[]> salidas)
         {
             DataTable buff = new DataTable("Datos");
 

@@ -13,11 +13,13 @@ namespace Nitralon
       private List<Capa> capas;// lista de capas
       private List<double[]> sigmas;// lista de matrices doubles de sigmas.
       private List<double[,]> deltas;// lista de matrices bidimencionales de deltas.
-        public double Error { get; private set; } = 99999;
+      public double Error { get; private set; } = 99999;
 
 
 
         #endregion
+
+      public  event EventHandler<MarcadoresDeErrorEventArgs> MarcadorDeError;
 
         /// <summary>
         /// Controla la interaccion, inicializacion y entrenamiento de las neuronas.
@@ -68,14 +70,23 @@ namespace Nitralon
           // iniciamos el error con un numero muy grande para que no haiga manera de que se saltee el entrenamiento.
             while (Error > errorAceptable)
             {
+                MarcadoresDeErrorEventArgs errorEventArgs = new MarcadoresDeErrorEventArgs();
                 intercciones--;
+
                 if (intercciones <= 0)
                 {
                     return false;
                 }
                 RetroPropagacion(entradas, salidasDeseadas, factorPasos);
                 Error = ErrorGeneral(entradas, salidasDeseadas);
+                if (intercciones % 1000 == 0)
+                {
+                    errorEventArgs.Interacciones = intercciones;
+                    errorEventArgs.Error = Error;
 
+                    OnMarcadorDeError(this, errorEventArgs);
+                 
+                }
 
             }
             return true;
@@ -119,6 +130,8 @@ namespace Nitralon
         /// <returns></returns>
         public double ErrorGeneral(List<double[]> entradas, List<double[]> salidaDeseada)
         {
+           
+
             double errorBuffer = 0;// declaramos el buffer.
             for (int i = 0; i < entradas.Count; i++)//iteramos las entradas
             {
@@ -223,5 +236,24 @@ namespace Nitralon
             }
         }
         #endregion
+
+        protected virtual void OnMarcadorDeError(object o, MarcadoresDeErrorEventArgs e)
+        {
+            MarcadorDeError?.Invoke(o, e);
+        }
+
+
+
     }
+
+    public class MarcadoresDeErrorEventArgs : EventArgs
+    {
+        public double Interacciones { get; set; }
+        public double Error { get; set; }
+
+    }
+
+
+
+
 }
