@@ -4,9 +4,36 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Nitralon"
+        xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        
+        Title="MainWindow" Height="500" Width="1000" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None" MouseLeftButtonDown="ArrastrarVentana">
     <Grid>
+        
+        
+        <Grid Height="60" VerticalAlignment="Top" Background="#388E3C">
+            <TextBlock Text="Red Neuronal Nitralon" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="34" FontFamily="Champagne &amp; Limousines"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="BotonMinimizar" Click="BotonMinimizar_Click" VerticalAlignment="Top" HorizontalAlignment="Right" Foreground="White"  Width="50" Height="35" Background="#388E3C" BorderBrush="#388E3C"  >
+                    <materialDesign:PackIcon Kind="Minus" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="20" Width="35"/>
+                </Button>
+                <Button x:Name="BotonMaximizar" Click="BotonMaximizar_Click" VerticalAlignment="Top" HorizontalAlignment="Right" Foreground="White" Height="35" Width="50" Background="#388E3C" BorderBrush="#388E3C" >
+                    <materialDesign:PackIcon Kind="Launch" HorizontalAlignment="Center" Height="20" Width="35"/>
+                </Button>
+                <Button x:Name="BotonCerrar" Click="BotonCerrar_Click" VerticalAlignment="Top" HorizontalAlignment="Right" Foreground="White" Height="35" Width="50" Background="#388E3C" BorderBrush="#388E3C"  >
+                    <materialDesign:PackIcon Kind="WindowClose" VerticalAlignment="Center" HorizontalAlignment="Center" Height="25" Width="35"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+        <Grid Margin="0 60 0 0">
+            <Border x:Name="borderDataGridCSV" BorderBrush="#FF858585" BorderThickness="1" Margin="20 35 0 0" HorizontalAlignment="Center" VerticalAlignment="Top">
+                
+                
+
+
+            </Border>
+        </Grid>
         
     </Grid>
 </Window>
