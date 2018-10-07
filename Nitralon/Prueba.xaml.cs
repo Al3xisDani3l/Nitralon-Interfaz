@@ -22,6 +22,10 @@ using System.Data;
 
 namespace Nitralon
 {
+
+  
+  
+
     /// <summary>
     /// Lógica de interacción para Prueba.xaml
     /// </summary>
@@ -35,7 +39,9 @@ namespace Nitralon
         /// <summary>
         /// Enum que contiene que tipo de tratamiento tendra el archivo CSV
         /// </summary>
-        public Modo Escaneo = Modo.Automatico;
+       
+
+        public Configuracion configuracionInterna = new Configuracion();
 
         Percepcion perceptron;
 
@@ -48,22 +54,14 @@ namespace Nitralon
 
         #region Datos
 
-        
-        /// <summary>
-        /// Define los comportamientos de lectura que recibira el archivo CSV
-        /// </summary>
-        public enum Modo
-        {
-            Automatico,
-            Semiautomatico,
-            manual
-        }
+
+       
 
         public Prueba()
         {
             InitializeComponent();
             RadioBoton_Inteligencia.IsChecked = true;
-            Menus(Escaneo);
+            Menus(configuracionInterna.ModoDeEscaneo);
             Boton_EmpezarEscaneo.IsEnabled = false;
         }
 
@@ -114,7 +112,7 @@ namespace Nitralon
             try
             {
                 archivo.ShowDialog();
-                ComprobacionDeDatos(Escaneo);
+                ComprobacionDeDatos(configuracionInterna.ModoDeEscaneo);
                 if (string.IsNullOrEmpty(archivo.FileName))
                 {
                     Boton_EmpezarEscaneo.IsEnabled = false;
@@ -140,33 +138,42 @@ namespace Nitralon
             {
                 Boton_EmpezarEscaneo.IsEnabled = true;
             }
-            Escaneo = Modo.Automatico;
-            Menus(Escaneo);
+            configuracionInterna.ModoDeEscaneo = Modo.Automatico;
+            Menus(configuracionInterna.ModoDeEscaneo);
 
         }
 
         private void RadioBoton_Semi_Inteligente_Click(object sender, RoutedEventArgs e)
         {
             Boton_EmpezarEscaneo.IsEnabled = false;
-            Escaneo = Modo.Semiautomatico;
-            Menus(Escaneo);
+            configuracionInterna.ModoDeEscaneo = Modo.Semiautomatico;
+            Menus(configuracionInterna.ModoDeEscaneo);
         }
 
         private void RadioBoton_Manual_Click(object sender, RoutedEventArgs e)
         {
             Boton_EmpezarEscaneo.IsEnabled = false;
-            Escaneo = Modo.manual;
-            Menus(Escaneo);
+            configuracionInterna.ModoDeEscaneo = Modo.manual;
+            Menus(configuracionInterna.ModoDeEscaneo);
         }
 
         private void Boton_EmpezarEscaneo_Click(object sender, RoutedEventArgs e)
         {
             DataGridCSV.InvalidateVisual();
            
-            switch (Escaneo)
+            switch (configuracionInterna.ModoDeEscaneo)
             {
                 case Modo.Automatico:
                     Procesador = new ProcesadorCSV(archivo);
+                    configuracionInterna.Entradas = Procesador.ConteoDeEntradas;
+                    configuracionInterna.Salidas = Procesador.ConteoDeSalidas;
+                    configuracionInterna.ValorMaximo = Procesador.ValorMaxS;
+                    configuracionInterna.ValorMinimo = Procesador.ValorMinS;
+                    configuracionInterna.DataTable = Procesador.DataTable;
+                    configuracionInterna.DatosDeEntrada = Procesador.Entradas;
+                    configuracionInterna.DatosDeSalida = Procesador.Salidas;
+
+
                     break;
                 case Modo.Semiautomatico:
                     Procesador = new ProcesadorCSV(archivo, Convert.ToDouble(txt_ValorMinimo.Text), Convert.ToDouble(txt_ValorMaximo.Text));
@@ -193,7 +200,7 @@ namespace Nitralon
         {
             if (ComprobarFormato(txt_ValorMinimo, Boton_EmpezarEscaneo,false))
             {
-                ComprobacionDeDatos(Escaneo);
+                ComprobacionDeDatos(configuracionInterna.ModoDeEscaneo);
             }
         }
 
@@ -201,7 +208,7 @@ namespace Nitralon
         {
             if (ComprobarFormato(txt_CantidadEntradas, Boton_EmpezarEscaneo))
             {
-                ComprobacionDeDatos(Escaneo);
+                ComprobacionDeDatos(configuracionInterna.ModoDeEscaneo);
             }
         }
 
@@ -209,7 +216,7 @@ namespace Nitralon
         {
             if (ComprobarFormato(txt_ValorMinimo, Boton_EmpezarEscaneo,false))
             {
-                ComprobacionDeDatos(Escaneo);
+                ComprobacionDeDatos(configuracionInterna.ModoDeEscaneo);
             }
         }
 
@@ -217,7 +224,7 @@ namespace Nitralon
         {
             if (ComprobarFormato(txt_ValorMinimo, Boton_EmpezarEscaneo))
             {
-                ComprobacionDeDatos(Escaneo);
+                ComprobacionDeDatos(configuracionInterna.ModoDeEscaneo);
             }
         }
 

@@ -15,10 +15,10 @@ namespace Nitralon
     public class ProcesadorCSV
     {
         #region variables
-        public double valorMaxE = -99999;
-        public double valorMinE = 999999;
-        public double valorMaxS = -99999;
-        public double valorMinS = 99999;
+        private double valorMaxE = -99999;
+        private double valorMinE = 999999;
+        private double valorMaxS = -99999;
+        private double valorMinS = 99999;
         public DataTable DataTable
         {
             get
@@ -29,19 +29,25 @@ namespace Nitralon
 
         public int ConteoDeEntradas { get => conteoDeEntradas; set => conteoDeEntradas = value; }
         public int ConteoDeSalidas { get => conteoDeSalidas;  set => conteoDeSalidas = value; }
+        public List<double[]> Entradas { get => entradas; set => entradas = value; }
+        public List<double[]> Salidas { get => salidas; set => salidas = value; }
+        public double ValorMaxE { get => valorMaxE; set => valorMaxE = value; }
+        public double ValorMinE { get => valorMinE; set => valorMinE = value; }
+        public double ValorMaxS { get => valorMaxS; set => valorMaxS = value; }
+        public double ValorMinS { get => valorMinS; set => valorMinS = value; }
 
         private int conteoDeEntradas = 0;// entero que lleva la cuenta de entradas.
         private  int conteoDeSalidas = 0;// entero que lleva la cuenta de salidas
 
-      
+
         /// <summary>
         /// Lista que contiene matrizes con ejemplos de entradas.
         /// </summary>
-        public List<double[]> Entradas = new List<double[]>();
+        private List<double[]> entradas = new List<double[]>();
         /// <summary>
         /// Lista que contiene matrizes con los ejemplos de salida.
         /// </summary>
-        public List<double[]> Salidas = new List<double[]>();
+        private List<double[]> salidas = new List<double[]>();
 
         //double[][] Entradas;
         //double[][] Salidas;
@@ -86,23 +92,23 @@ namespace Nitralon
                 {
                     if (j < conteoDeEntradas)
                     {
-                        if (double.Parse(matrixBuffer[j]) > valorMaxE)
+                        if (double.Parse(matrixBuffer[j]) > ValorMaxE)
                         {
-                            valorMaxE = double.Parse(matrixBuffer[j]);
+                            ValorMaxE = double.Parse(matrixBuffer[j]);
                         }
-                        else if (double.Parse(matrixBuffer[j]) < valorMinE)
+                        else if (double.Parse(matrixBuffer[j]) < ValorMinE)
                         {
-                            valorMinE = double.Parse(matrixBuffer[j]);
+                            ValorMinE = double.Parse(matrixBuffer[j]);
                         }
                     }
                     else
                     {
-                        if (double.Parse(matrixBuffer[j]) > valorMaxS)
+                        if (double.Parse(matrixBuffer[j]) > ValorMaxS)
                         {
-                            valorMaxS = double.Parse(matrixBuffer[j]);
-                            if (double.Parse(matrixBuffer[j]) < valorMinS)
+                            ValorMaxS = double.Parse(matrixBuffer[j]);
+                            if (double.Parse(matrixBuffer[j]) < ValorMinS)
                             {
-                                valorMinS = double.Parse(matrixBuffer[j]);
+                                ValorMinS = double.Parse(matrixBuffer[j]);
                             }
                         }
                      
@@ -123,11 +129,11 @@ namespace Nitralon
                 {
                     if (j < conteoDeEntradas)// Si j es menor que entradas, entonces es una entrada
                     {
-                        entradas[j] = Normalize(double.Parse(matrixBuffer[j]), valorMinE, valorMaxE); // Normalizamos el numero
+                        entradas[j] = Normalize(double.Parse(matrixBuffer[j]), ValorMinE, ValorMaxE); // Normalizamos el numero
                     }
                     else //si j mayor que _entradas entonces es una salida.
                     {
-                        salidas[j - conteoDeEntradas] = Normalize(double.Parse(matrixBuffer[j]), valorMinS, valorMaxS); //Normalizamos el numero
+                        salidas[j - conteoDeEntradas] = Normalize(double.Parse(matrixBuffer[j]), ValorMinS, ValorMaxS); //Normalizamos el numero
                     }
                 }
 
