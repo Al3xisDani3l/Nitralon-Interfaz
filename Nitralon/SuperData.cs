@@ -19,7 +19,7 @@ namespace Nitralon
     }
 
 
-
+    [Serializable]
     class Binary
     {
         private Percepcion _perceptron;
@@ -61,7 +61,7 @@ namespace Nitralon
         }
 
     }
-
+    [Serializable]
     public class Configuracion
     {
 
@@ -69,8 +69,10 @@ namespace Nitralon
 
         private int entradas = 1;
         private int salidas = 1;
-        private double valorMaximo = 1;
-        private double valorMinimo = 0;
+        private double valorMaxSalida = 1;
+        private double valorMinSalida = 0;
+        private double valorMaxEntrada = 1;
+        private double valorMinEntradas = 0;
         private DataTable dataTable;
         private List<double[]> datosDeEntrada = new List<double[]>();
         private List<double[]> datosDeSalida = new List<double[]>();
@@ -78,12 +80,14 @@ namespace Nitralon
 
         public int Entradas { get => entradas; set => entradas = value; }
         public int Salidas { get => salidas; set => salidas = value; }
-        public double ValorMaximo { get => valorMaximo; set => valorMaximo = value; }
-        public double ValorMinimo { get => valorMinimo; set => valorMinimo = value; }
+        public double ValorMaxSalida { get => valorMaxSalida; set => valorMaxSalida = value; }
+        public double ValorMinSalida { get => valorMinSalida; set => valorMinSalida = value; }
         public Modo ModoDeEscaneo { get => modo; set => modo = value; }
         public DataTable DataTable { get => dataTable; set => dataTable = value; }
         public List<double[]> DatosDeEntrada { get => datosDeEntrada; set => datosDeEntrada = value; }
         public List<double[]> DatosDeSalida { get => datosDeSalida; set => datosDeSalida = value; }
+        public double ValorMaxEntrada { get => valorMaxEntrada; set => valorMaxEntrada = value; }
+        public double ValorMinEntradas { get => valorMinEntradas; set => valorMinEntradas = value; }
     }
 
 

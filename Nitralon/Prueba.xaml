@@ -10,7 +10,7 @@
         xmlns:Wpf="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf" x:Class="Nitralon.Prueba"
          
         mc:Ignorable="d"
-         Title="MainWindow" Height="700" Width="1150" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded"  AllowsTransparency="True" WindowStyle="None" Background="#66000000">
+         Title="MainWindow" Height="700" Width="1200" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded"  AllowsTransparency="True" WindowStyle="None" Background="#66000000">
     <Window.Resources>
         <Color x:Key="PrimaryMid">#388E3C</Color>
         <Color x:Key="DarkPrimary">#388E3C</Color>
@@ -101,17 +101,29 @@
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left">
                                     <Border  x:Name="BorderParametrosAuto" BorderThickness="1" BorderBrush="#FF858585" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="20 20 0 0 ">
                                         <StackPanel  HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal">
+                                           
                                             <StackPanel HorizontalAlignment="Left" Margin="20 10 20 30">
                                                 <StackPanel Orientation="Horizontal">
                                                     <materialDesign:PackIcon Kind="CodeLessThan" Foreground="{Binding BorderBrush, ElementName=txt_CantidadEntradas}" VerticalAlignment="Bottom" Margin="0 0 7 0" Width="29" Height="31"/>
-                                                    <TextBox x:Name="txt_ValorMaximo" TextChanged="txt_ValorMaximo_TextChanged"  CharacterCasing="Upper" Width="130" materialDesign:HintAssist.Hint="Valor maximo" materialDesign:HintAssist.IsFloating="True" FontSize="20" Foreground="White" BorderBrush="#89FFFFFF"/>
+                                                    <TextBox x:Name="txt_ValorMaximoEntrada" TextChanged="txt_ValorMaximoEntrada_TextChanged"  CharacterCasing="Upper" Width="130" materialDesign:HintAssist.Hint="Entrada Max" materialDesign:HintAssist.IsFloating="True" FontSize="20" Foreground="White" BorderBrush="#89FFFFFF"/>
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal">
                                                     <materialDesign:PackIcon Kind="CodeGreaterThan" Foreground="{Binding BorderBrush, ElementName=txt_CantidadSalidas}" VerticalAlignment="Bottom" Margin="0 0 7 0" Width="29" Height="31"/>
-                                                    <TextBox x:Name="txt_ValorMinimo" TextChanged="txt_ValorMinimo_TextChanged" CharacterCasing="Upper" Width="130" materialDesign:HintAssist.Hint="Valor minimo" materialDesign:HintAssist.IsFloating="True" FontSize="20" Foreground="White" BorderBrush="#89FFFFFF" ForceCursor="True"/>
+                                                    <TextBox x:Name="txt_ValorMinimoEntrada" TextChanged="txt_ValorMinimoEntrada_TextChanged" CharacterCasing="Upper" Width="130" materialDesign:HintAssist.Hint="Entrada Min" materialDesign:HintAssist.IsFloating="True" FontSize="20" Foreground="White" BorderBrush="#89FFFFFF" ForceCursor="True"/>
                                                 </StackPanel>
                                             </StackPanel>
-                                            <StackPanel x:Name="Stackpanel_ParametrosSemi" HorizontalAlignment="Left" Margin="10 10 20 30">
+                                            <StackPanel HorizontalAlignment="Left" Margin="20 10 20 30">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <materialDesign:PackIcon Kind="CodeLessThan" Foreground="{Binding BorderBrush, ElementName=txt_CantidadEntradas}" VerticalAlignment="Bottom" Margin="0 0 7 0" Width="29" Height="31"/>
+                                                    <TextBox x:Name="txt_ValorMaximo" TextChanged="txt_ValorMaximo_TextChanged"  CharacterCasing="Upper" Width="130" materialDesign:HintAssist.Hint="Salida Max" materialDesign:HintAssist.IsFloating="True" FontSize="20" Foreground="White" BorderBrush="#89FFFFFF"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <materialDesign:PackIcon Kind="CodeGreaterThan" Foreground="{Binding BorderBrush, ElementName=txt_CantidadSalidas}" VerticalAlignment="Bottom" Margin="0 0 7 0" Width="29" Height="31"/>
+                                                    <TextBox x:Name="txt_ValorMinimo" TextChanged="txt_ValorMinimo_TextChanged" CharacterCasing="Upper" Width="130" materialDesign:HintAssist.Hint="Salida Min" materialDesign:HintAssist.IsFloating="True" FontSize="20" Foreground="White" BorderBrush="#89FFFFFF" ForceCursor="True"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                            
+                                            <StackPanel  x:Name="Stackpanel_ParametrosSemi" HorizontalAlignment="Left" Margin="10 10 20 30">
                                                 <StackPanel Orientation="Horizontal">
                                                     <materialDesign:PackIcon Kind="ArrowRight" Foreground="{Binding BorderBrush, ElementName=txt_CantidadEntradas}" VerticalAlignment="Bottom" Margin="0 0 7 1" Width="29" Height="31"/>
                                                     <TextBox x:Name="txt_CantidadEntradas" TextChanged="txt_CantidadEntradas_TextChanged" CharacterCasing="Upper" Width="90" materialDesign:HintAssist.Hint="Entradas" materialDesign:HintAssist.IsFloating="True" FontSize="20" Foreground="White" BorderBrush="#89FFFFFF"/>
@@ -124,17 +136,18 @@
 
                                         </StackPanel>
                                     </Border>
-                                    <Border BorderThickness="1" BorderBrush="#FF858585" VerticalAlignment="Top" Margin="20 20 0 0">
+                                    <Border BorderThickness="1" BorderBrush="#FF858585" VerticalAlignment="Top" Margin="15 20 0 0">
 
-                                        <Button x:Name="Boton_EmpezarEscaneo" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Background="#AEEA00" BorderBrush="#AEEA00" Content="Empezar escaneo" Width="200" Height="50" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="55 40 55 44" Click="Boton_EmpezarEscaneo_Click"/>
+                                        <Button x:Name="Boton_EmpezarEscaneo" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Background="#AEEA00" BorderBrush="#AEEA00" Content="Empezar escaneo" Width="200" Height="50" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="40 40 40 48" Click="Boton_EmpezarEscaneo_Click"/>
                                     </Border>
                                 </StackPanel>
-                                <Border x:Name="borderDataGridCSV" BorderBrush="#FF858585" BorderThickness="1" Margin="20 35 0 0" HorizontalAlignment="Center" VerticalAlignment="Top" IsManipulationEnabled="True">
+                                <Border x:Name="borderDataGridCSV" BorderBrush="#FF858585" BorderThickness="1" Margin="20 35 0 0" HorizontalAlignment="Center" VerticalAlignment="Center" IsManipulationEnabled="True">
 
 
                                     <DataGrid x:Name="DataGridCSV" 
                                               HorizontalAlignment="Center" 
                                               ItemsSource="{Binding}" 
+                                             
                                               VerticalAlignment="Center" 
                                               Margin="40 40 40 40" 
                                               Width="750" Height="325" 

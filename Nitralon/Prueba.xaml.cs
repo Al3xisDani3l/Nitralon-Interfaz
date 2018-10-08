@@ -23,8 +23,8 @@ using System.Data;
 namespace Nitralon
 {
 
-  
-  
+
+
 
     /// <summary>
     /// Lógica de interacción para Prueba.xaml
@@ -39,13 +39,13 @@ namespace Nitralon
         /// <summary>
         /// Enum que contiene que tipo de tratamiento tendra el archivo CSV
         /// </summary>
-       
 
-        public Configuracion configuracionInterna = new Configuracion();
+
+        public Configuracion configuracionInterna;
 
         Percepcion perceptron;
 
-      
+
 
 
 
@@ -55,18 +55,24 @@ namespace Nitralon
         #region Datos
 
 
-       
+
 
         public Prueba()
         {
             InitializeComponent();
-            RadioBoton_Inteligencia.IsChecked = true;
+            Serializacion.Deserializar(ref configuracionInterna);
+            txt_ValorMinimoEntrada.Text = configuracionInterna.ValorMinEntradas.ToString();
+            txt_ValorMaximoEntrada.Text = configuracionInterna.ValorMaxEntrada.ToString();
+            txt_ValorMaximo.Text = configuracionInterna.ValorMaxSalida.ToString();
+            txt_ValorMinimo.Text = configuracionInterna.ValorMinSalida.ToString();
+            txt_CantidadEntradas.Text = configuracionInterna.Entradas.ToString();
+            txt_CantidadSalidas.Text = configuracionInterna.Salidas.ToString();
             Menus(configuracionInterna.ModoDeEscaneo);
             Boton_EmpezarEscaneo.IsEnabled = false;
-          
+
         }
 
-       
+
 
         #region Procedimientos de los botones
 
@@ -74,13 +80,13 @@ namespace Nitralon
 
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-           
+
             this.DragMove();
         }
 
         private void Boton_Cerrar_Click(object sender, RoutedEventArgs e)
         {
-         
+
             this.Close();
         }
 
@@ -107,6 +113,7 @@ namespace Nitralon
         {
             Fluent efect = new Fluent();
             efect.EnableBlur(this);
+
         }
 
         private void Boton_archivo_Click(object sender, RoutedEventArgs e)
@@ -134,7 +141,23 @@ namespace Nitralon
                 throw;
             }
 
-           
+
+        }
+
+        private void txt_ValorMinimoEntrada_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (ComprobarFormato(txt_ValorMinimoEntrada, Boton_EmpezarEscaneo,false))
+            {
+                ComprobacionDeDatos(configuracionInterna.ModoDeEscaneo);
+            }
+        }
+
+        private void txt_ValorMaximoEntrada_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (ComprobarFormato(txt_ValorMaximoEntrada, Boton_EmpezarEscaneo, false))
+            {
+                ComprobacionDeDatos(configuracionInterna.ModoDeEscaneo);
+            }
         }
 
         private void RadioBoton_Inteligencia_Click(object sender, RoutedEventArgs e)
@@ -165,37 +188,69 @@ namespace Nitralon
         private void Boton_EmpezarEscaneo_Click(object sender, RoutedEventArgs e)
         {
             DataGridCSV.InvalidateVisual();
-           
+
             switch (configuracionInterna.ModoDeEscaneo)
             {
                 case Modo.Automatico:
                     Procesador = new ProcesadorCSV(archivo);
                     configuracionInterna.Entradas = Procesador.ConteoDeEntradas;
                     configuracionInterna.Salidas = Procesador.ConteoDeSalidas;
-                    configuracionInterna.ValorMaximo = Procesador.ValorMaxS;
-                    configuracionInterna.ValorMinimo = Procesador.ValorMinS;
+                    configuracionInterna.ValorMaxSalida = Procesador.ValorMaxS;
+                    configuracionInterna.ValorMinSalida = Procesador.ValorMinS;
+                    configuracionInterna.ValorMinEntradas = Procesador.ValorMinE;
+                    configuracionInterna.ValorMaxEntrada = Procesador.ValorMaxE;  
                     configuracionInterna.DataTable = Procesador.DataTable;
                     configuracionInterna.DatosDeEntrada = Procesador.Entradas;
                     configuracionInterna.DatosDeSalida = Procesador.Salidas;
+                    txt_ValorMinimoEntrada.Text = configuracionInterna.ValorMinEntradas.ToString();
+                    txt_ValorMaximoEntrada.Text = configuracionInterna.ValorMaxEntrada.ToString();
+                    txt_ValorMaximo.Text = configuracionInterna.ValorMaxSalida.ToString();
+                    txt_ValorMinimo.Text = configuracionInterna.ValorMinSalida.ToString();
+                    txt_CantidadEntradas.Text = configuracionInterna.Entradas.ToString();
+                    txt_CantidadSalidas.Text = configuracionInterna.Salidas.ToString();
+
 
 
                     break;
                 case Modo.Semiautomatico:
-                    Procesador = new ProcesadorCSV(archivo, Convert.ToDouble(txt_ValorMinimo.Text), Convert.ToDouble(txt_ValorMaximo.Text));
+                    Procesador = new ProcesadorCSV(archivo, Convert.ToDouble(txt_ValorMinimo.Text), Convert.ToDouble(txt_ValorMaximo.Text), Convert.ToDouble(txt_ValorMinimoEntrada.Text), Convert.ToDouble(txt_ValorMaximoEntrada.Text));
+                    configuracionInterna.Entradas = Procesador.ConteoDeEntradas;
+                    configuracionInterna.Salidas = Procesador.ConteoDeSalidas;
+                    configuracionInterna.ValorMaxSalida = Convert.ToDouble(txt_ValorMaximo.Text);
+                    configuracionInterna.ValorMaxSalida = Convert.ToDouble(txt_ValorMinimo.Text);
+                    configuracionInterna.ValorMinSalida = Convert.ToDouble(txt_ValorMinimoEntrada.Text);
+                    configuracionInterna.ValorMinEntradas = Convert.ToDouble(txt_ValorMaximoEntrada.Text);
+                    configuracionInterna.DataTable = Procesador.DataTable;
+                    configuracionInterna.DatosDeEntrada = Procesador.Entradas;
+                    configuracionInterna.DatosDeSalida = Procesador.Salidas;
+                    txt_CantidadEntradas.Text = configuracionInterna.Entradas.ToString();
+                    txt_CantidadSalidas.Text = configuracionInterna.Salidas.ToString();
+
+
                     break;
                 case Modo.manual:
-                    Procesador = new ProcesadorCSV(archivo,Convert.ToInt32(txt_CantidadEntradas.Text),Convert.ToInt32(txt_CantidadSalidas.Text), Convert.ToDouble(txt_ValorMinimo.Text), Convert.ToDouble(txt_ValorMaximo.Text));
+                    Procesador = new ProcesadorCSV(archivo,Convert.ToInt32(txt_CantidadEntradas.Text),Convert.ToInt32(txt_CantidadSalidas.Text), Convert.ToDouble(txt_ValorMinimo.Text), Convert.ToDouble(txt_ValorMaximo.Text), Convert.ToDouble(txt_ValorMinimoEntrada.Text), Convert.ToDouble(txt_ValorMaximoEntrada.Text));
+                    configuracionInterna.Entradas = Convert.ToInt32(txt_CantidadEntradas.Text);
+                    configuracionInterna.Salidas = Convert.ToInt32(txt_CantidadSalidas.Text);
+                    configuracionInterna.ValorMaxSalida = Convert.ToDouble(txt_ValorMaximo.Text);
+                    configuracionInterna.ValorMaxSalida = Convert.ToDouble(txt_ValorMinimo.Text);
+                    configuracionInterna.ValorMinSalida = Convert.ToDouble(txt_ValorMinimoEntrada.Text);
+                    configuracionInterna.ValorMinEntradas = Convert.ToDouble(txt_ValorMaximoEntrada.Text);
+                    configuracionInterna.DataTable = Procesador.DataTable;
+                    configuracionInterna.DatosDeEntrada = Procesador.Entradas;
+                    configuracionInterna.DatosDeSalida = Procesador.Salidas;
                     break;
                 default:
                     break;
             }
 
+           
             DataGridCSV.ItemsSource = Procesador.DataTable.DefaultView;
 
 
-            
 
-          
+
+
 
 
 
@@ -203,8 +258,8 @@ namespace Nitralon
 
         private void txt_ValorMinimo_TextChanged(object sender, TextChangedEventArgs e)
         {
-           
-            if (ComprobarFormato(txt_ValorMinimo, Boton_EmpezarEscaneo,false))
+
+            if (ComprobarFormato(txt_ValorMinimo, Boton_EmpezarEscaneo, false))
             {
                 ComprobacionDeDatos(configuracionInterna.ModoDeEscaneo);
             }
@@ -218,9 +273,9 @@ namespace Nitralon
             }
         }
 
-            private void txt_ValorMaximo_TextChanged(object sender, TextChangedEventArgs e)
+        private void txt_ValorMaximo_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (ComprobarFormato(txt_ValorMinimo, Boton_EmpezarEscaneo,false))
+            if (ComprobarFormato(txt_ValorMinimo, Boton_EmpezarEscaneo, false))
             {
                 ComprobacionDeDatos(configuracionInterna.ModoDeEscaneo);
             }
@@ -234,10 +289,10 @@ namespace Nitralon
             }
         }
 
-            #endregion
+        #endregion
 
 
-        
+
 
 
 
@@ -253,12 +308,12 @@ namespace Nitralon
 
         #region Entrenamiento
 
-          private void txt_Interacciones_TextChanged(object sender, TextChangedEventArgs e)
+        private void txt_Interacciones_TextChanged(object sender, TextChangedEventArgs e)
         {
             ComprobarFormato(txt_Interacciones, Boton_Entrenamiento);
         }
 
-         private void txt_PasosDelta_TextChanged(object sender, TextChangedEventArgs e)
+        private void txt_PasosDelta_TextChanged(object sender, TextChangedEventArgs e)
         {
             ComprobarFormato(txt_PasosDelta, Boton_Entrenamiento, false);
         }
@@ -288,13 +343,16 @@ namespace Nitralon
             switch (modo)
             {
                 case Modo.Automatico:
+                    RadioBoton_Inteligencia.IsChecked = true;
                     RadioBoton_Semi_Inteligente.IsChecked = false;
                     RadioBoton_Manual.IsChecked = false;
                     BorderParametrosAuto.IsEnabled = false;
 
                     break;
                 case Modo.Semiautomatico:
+
                     RadioBoton_Inteligencia.IsChecked = false;
+                    RadioBoton_Semi_Inteligente.IsChecked = true;
                     RadioBoton_Manual.IsChecked = false;
                     BorderParametrosAuto.IsEnabled = true;
 
@@ -304,6 +362,7 @@ namespace Nitralon
                 case Modo.manual:
                     RadioBoton_Inteligencia.IsChecked = false;
                     RadioBoton_Semi_Inteligente.IsChecked = false;
+                    RadioBoton_Manual.IsChecked = true;
                     BorderParametrosAuto.IsEnabled = true;
                     Stackpanel_ParametrosSemi.IsEnabled = true;
                     break;
@@ -331,9 +390,9 @@ namespace Nitralon
                 case Modo.Semiautomatico:
                     if (archivo != null)
                     {
-                        if (!string.IsNullOrEmpty(txt_ValorMinimo.Text) && !string.IsNullOrEmpty(txt_ValorMaximo.Text))
+                        if (!string.IsNullOrEmpty(txt_ValorMinimo.Text) && !string.IsNullOrEmpty(txt_ValorMaximo.Text) && !string.IsNullOrEmpty(txt_ValorMinimoEntrada.Text) && !string.IsNullOrEmpty(txt_ValorMaximoEntrada.Text))
                         {
-                            if (IsDouble(txt_ValorMinimo.Text) && IsDouble(txt_ValorMaximo.Text))
+                            if (IsDouble(txt_ValorMinimo.Text) && IsDouble(txt_ValorMaximo.Text)&& IsDouble(txt_ValorMaximoEntrada.Text) && IsDouble(txt_ValorMinimoEntrada.Text))
                             {
                                 Boton_EmpezarEscaneo.IsEnabled = true;
                             }
@@ -359,7 +418,7 @@ namespace Nitralon
                     {
                         if (!string.IsNullOrEmpty(txt_ValorMinimo.Text) && !string.IsNullOrEmpty(txt_ValorMaximo.Text))
                         {
-                            if (IsDouble(txt_ValorMinimo.Text) && IsDouble(txt_ValorMaximo.Text) && IsEntero(txt_CantidadEntradas.Text) && IsEntero(txt_CantidadSalidas.Text))
+                            if (IsDouble(txt_ValorMinimo.Text) && IsDouble(txt_ValorMaximo.Text) && IsEntero(txt_CantidadEntradas.Text) && IsEntero(txt_CantidadSalidas.Text)&& IsDouble(txt_ValorMaximoEntrada.Text) && IsDouble(txt_ValorMinimoEntrada.Text))
                             {
                                 Boton_EmpezarEscaneo.IsEnabled = true;
                             }
@@ -385,6 +444,8 @@ namespace Nitralon
                     break;
             }
         }
+
+
 
         public bool IsEntero(string numero)
         {
@@ -462,12 +523,20 @@ namespace Nitralon
 
         #endregion
 
-      
+
+        ~Prueba()
+        {
+            Serializacion.Serializar(configuracionInterna);
+
+        }
+
+     
     }
+}
 
 
 
-    class Fluent
+        class Fluent
     {
         [DllImport("user32.dll")]
         internal static extern int SetWindowCompositionAttribute(IntPtr hand, ref WindowsCompositionAttributeData data);
@@ -522,4 +591,4 @@ namespace Nitralon
 
 
     }
-}
+    

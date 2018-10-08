@@ -38,7 +38,7 @@ namespace Nitralon
 
         public static bool Serializar(object objeto)
         {
-            FileStream fileStream = new FileStream(System.Reflection.Assembly.GetExecutingAssembly().Location + @"\Data.neuron" , FileMode.Create);
+            FileStream fileStream = new FileStream(Directory.GetCurrentDirectory() + @"\Data.neuron" , FileMode.Create);
             BinaryFormatter formateador = new BinaryFormatter();
 
             try
@@ -106,14 +106,15 @@ namespace Nitralon
         /// <typeparam name="Tipo"></typeparam>
         /// <param name="objeto"></param>
         /// <returns></returns>
-        public static bool Deserializar<Tipo>(ref Tipo objeto)
+        public static bool Deserializar<Tipo> (ref Tipo objeto) where Tipo : new()
         {
 
-            FileStream fileStream = new FileStream(System.Reflection.Assembly.GetExecutingAssembly().Location + @"\Data.neuron", FileMode.Open);
-            BinaryFormatter formateador = new BinaryFormatter();
+            FileStream fileStream;
 
             try
             {
+                 fileStream = new FileStream(Directory.GetCurrentDirectory() + @"\Data.neuron", FileMode.Open);
+                BinaryFormatter formateador = new BinaryFormatter();
 
                 if (fileStream != null)
                 {
@@ -123,24 +124,26 @@ namespace Nitralon
                 }
                 else
                 {
-                    throw new FileNotFoundException();
+                    objeto = new Tipo();
+                    return false;
                 }
 
             }
             catch (FileNotFoundException a)
             {
-
+                objeto = new Tipo();
                 return false;
 
             }
             catch (SerializationException b)
             {
+                objeto = new Tipo();
                 return false;
             }
 
             finally
             {
-                fileStream.Close();
+              
             }
 
 
