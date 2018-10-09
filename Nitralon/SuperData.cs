@@ -76,6 +76,10 @@ namespace Nitralon
         private DataTable dataTable;
         private List<double[]> datosDeEntrada = new List<double[]>();
         private List<double[]> datosDeSalida = new List<double[]>();
+        private int[] neurnasPorCapa;
+        private int ciclosDeInteraccion;
+        private double errorAceptable;
+        private double saltosDelta;
         
 
         public int Entradas { get => entradas; set => entradas = value; }
@@ -88,6 +92,10 @@ namespace Nitralon
         public List<double[]> DatosDeSalida { get => datosDeSalida; set => datosDeSalida = value; }
         public double ValorMaxEntrada { get => valorMaxEntrada; set => valorMaxEntrada = value; }
         public double ValorMinEntradas { get => valorMinEntradas; set => valorMinEntradas = value; }
+        public int[] NeurnasPorCapa { get => neurnasPorCapa; set => neurnasPorCapa = value; }
+        public int CiclosDeInteraccion { get => ciclosDeInteraccion; set => ciclosDeInteraccion = value; }
+        public double ErrorAceptable { get => errorAceptable; set => errorAceptable = value; }
+        public double SaltosDelta { get => saltosDelta; set => saltosDelta = value; }
     }
 
 

@@ -20,6 +20,7 @@ using System.Text.RegularExpressions;
 using MaterialDesignThemes;
 using System.Data;
 
+
 namespace Nitralon
 {
 
@@ -31,6 +32,9 @@ namespace Nitralon
     /// </summary>
     public partial class Prueba : Window
     {
+
+
+
         #region Variables
         /// <summary>
         /// OpenFileDialog que contiene la direccion de el archivo de entrenamiento.
@@ -46,15 +50,11 @@ namespace Nitralon
         Percepcion perceptron;
 
 
-
+        List<TextBox> textBoxes = new List<TextBox>();
 
 
         ProcesadorCSV Procesador;
         #endregion
-
-        #region Datos
-
-
 
 
         public Prueba()
@@ -69,10 +69,12 @@ namespace Nitralon
             txt_CantidadSalidas.Text = configuracionInterna.Salidas.ToString();
             Menus(configuracionInterna.ModoDeEscaneo);
             Boton_EmpezarEscaneo.IsEnabled = false;
+            Boton_ConfirmarPerceptron.IsEnabled = false;
+            Grid_Entrenamiento.IsEnabled = false;
 
         }
 
-
+        #region Datos
 
         #region Procedimientos de los botones
 
@@ -291,18 +293,99 @@ namespace Nitralon
 
         #endregion
 
+        #endregion
+
+        #region Configuracion
+
+        private void txt_Capas_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Boton_ConfirmarPerceptron.IsEnabled = false;
+            foreach (TextBox item in textBoxes)
+            {
+                item.TextChanged -= Text_TextChanged;
+            }
+          
+            textBoxes.Clear();
+            if (ComprobarFormato(txt_Capas))
+            {
+                WrapPanel_TextBox.Children.Clear();
+                int tamano = Convert.ToInt32(txt_Capas.Text);
+                if (tamano >= 50)
+                {
+                    tamano = 50;
+                }
+
+               
+
+                
+                for (int i = 0; i < tamano; i++)
+                {
+                    GroupBox group = new GroupBox();
+                    TextBox textBox = new TextBox();
+                    group.Header = "Capa " + (i + 1);
+                    group.Height = 200;
+                    group.Width = 200;
+                    group.Margin = new Thickness(25);
+                    //textBox.Margin = new Thickness(25, 25, 25, 25);
+                    textBox.Foreground = Brushes.White;
+                    textBox.BorderBrush = new SolidColorBrush(Color.FromRgb(133, 133, 133));
+                    textBox.FontSize = 20;
+                    textBox.Foreground = Brushes.White;
+                    textBox.HorizontalAlignment = HorizontalAlignment.Center;
+                    textBox.VerticalAlignment = VerticalAlignment.Center;
+                    group.Content = textBox;
+
+                  
+                   
+
+
+                    WrapPanel_TextBox.Children.Add(group);
+                }
+             
+            }
+
+            foreach (GroupBox box in WrapPanel_TextBox.Children )
+            {
+                textBoxes.Add((TextBox)box.Content);
+            }
+            foreach (TextBox text in textBoxes)
+            {
+                text.TextChanged += Text_TextChanged;
+            }
 
 
 
 
+        }
 
+        private void Text_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ComprobarFormato((TextBox)sender, Boton_ConfirmarPerceptron);
+           
+        }
 
+        private void Boton_ConfirmarPerceptron_Click(object sender, RoutedEventArgs e)
+        {
+            int[] bufferNeuronas = new int[textBoxes.Count];
 
+            for (int i = 0; i < textBoxes.Count; i++)
+            {
+                if (Convert.ToInt32(textBoxes[i].Text) <= 0)
+                {
+                    bufferNeuronas[i] = 1;
+                }
+                else
+                {
+                    bufferNeuronas[i] = Convert.ToInt32(textBoxes[i].Text);
+                }
+               
+               
+            }
+            configuracionInterna.NeurnasPorCapa = bufferNeuronas;
+            Grid_Entrenamiento.IsEnabled = true;
+            perceptron = new Percepcion(Procesador.ConteoDeEntradas, configuracionInterna.NeurnasPorCapa, Procesador.ConteoDeSalidas);
 
-
-
-
-
+        }
 
         #endregion
 
@@ -310,21 +393,35 @@ namespace Nitralon
 
         private void txt_Interacciones_TextChanged(object sender, TextChangedEventArgs e)
         {
-            ComprobarFormato(txt_Interacciones, Boton_Entrenamiento);
+            if ( ComprobarFormato(txt_Interacciones, Boton_Entrenamiento))
+            {
+                configuracionInterna.CiclosDeInteraccion = Convert.ToInt32(txt_Interacciones.Text);
+            }
         }
 
         private void txt_PasosDelta_TextChanged(object sender, TextChangedEventArgs e)
         {
-            ComprobarFormato(txt_PasosDelta, Boton_Entrenamiento, false);
+            if (ComprobarFormato(txt_PasosDelta, Boton_Entrenamiento, false))
+            {
+                configuracionInterna.SaltosDelta = Convert.ToDouble(txt_PasosDelta.Text);
+            }
+           
         }
 
         private void txt_ErrorAceptable_TextChanged(object sender, TextChangedEventArgs e)
         {
-            ComprobarFormato(txt_ErrorAceptable, Boton_Entrenamiento, false);
+           
+            if (ComprobarFormato(txt_ErrorAceptable, Boton_Entrenamiento, false))
+            {
+                configuracionInterna.ErrorAceptable = Convert.ToDouble(txt_ErrorAceptable.Text);
+            }
         }
         private void Boton_Entrenamiento_Click(object sender, RoutedEventArgs e)
         {
-            perceptron = new Percepcion(Procesador.ConteoDeEntradas, new int[] { 1, 5, 1, 10 }, Procesador.ConteoDeSalidas);
+            if (!perceptron.Entrenamiento(configuracionInterna.DatosDeEntrada, configuracionInterna.DatosDeSalida, configuracionInterna.CiclosDeInteraccion, configuracionInterna.ErrorAceptable, configuracionInterna.SaltosDelta))
+            {
+
+            }
         }
 
 
@@ -371,7 +468,10 @@ namespace Nitralon
             }
 
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="modo"></param>
         public void ComprobacionDeDatos(Modo modo)
         {
             switch (modo)
@@ -444,18 +544,24 @@ namespace Nitralon
                     break;
             }
         }
-
-
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="numero"></param>
+        /// <returns></returns>
         public bool IsEntero(string numero)
         {
             return Regex.IsMatch(numero, @"^\d+$");
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="numero"></param>
+        /// <returns></returns>
         public bool IsDouble(string numero)
         {
             return Regex.IsMatch(numero, @"^(\d|-)?(\d|,)*\.?\d*$");
         }
-
         /// <summary>
         /// Comprueba el formato de texto y lo valida en caso de ser correcto
         /// </summary>
@@ -474,7 +580,7 @@ namespace Nitralon
                     if (IsEntero(textBox.Text))
                     {
                         textBox.Foreground = Brushes.White;
-
+                        boton.IsEnabled = true;
                         return true;
 
                     }
@@ -490,7 +596,7 @@ namespace Nitralon
                     if (IsDouble(textBox.Text))
                     {
                         textBox.Foreground = Brushes.White;
-
+                        textBox.IsEnabled = true;
                         return true;
 
                     }
@@ -511,19 +617,68 @@ namespace Nitralon
 
 
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="textBox"></param>
+        /// <param name="Entero"></param>
+        /// <returns></returns>
+        public bool ComprobarFormato(TextBox textBox, bool Entero = true)
+        {
+            if (!string.IsNullOrEmpty(textBox.Text))
+            {
 
 
+                if (Entero)
+                {
+                    if (IsEntero(textBox.Text))
+                    {
+                        textBox.Foreground = Brushes.White;
+
+                        return true;
+
+                    }
+                    else
+                    {
+                        textBox.Foreground = new SolidColorBrush(Color.FromRgb(221, 79, 67));
+                       
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (IsDouble(textBox.Text))
+                    {
+                        textBox.Foreground = Brushes.White;
+
+                        return true;
+
+                    }
+                    else
+                    {
+                        textBox.Foreground = new SolidColorBrush(Color.FromRgb(221, 79, 67));
+                       
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                textBox.Foreground = new SolidColorBrush(Color.FromRgb(221, 79, 67));
+               
+                return false;
+            }
 
 
-
-
-
-
-
+        }
 
         #endregion
 
 
+
+
+
+  
         ~Prueba()
         {
             Serializacion.Serializar(configuracionInterna);

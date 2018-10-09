@@ -29,11 +29,31 @@ namespace Nitralon
         /// <param name="salida">Cantidad de salidas que contendra el perceptron</param>
         public Percepcion(int entradas, int[] neuronasPorCapa, int salida)
         {
+            int[] _neuronasPorCapa = new int[neuronasPorCapa.Length + 2];
+
+            for (int i = 0; i < _neuronasPorCapa.Length; i++)
+            {
+                if ( i == 0)
+                {
+                    _neuronasPorCapa[i] = entradas;
+
+                }
+                else if (i == _neuronasPorCapa.Length - 1)
+                {
+                    _neuronasPorCapa[i] = salida;
+                }
+                else
+                {
+                    _neuronasPorCapa[i] = neuronasPorCapa[i - 1];
+                }
+            }
+
+
             capas = new List<Capa>();// Instanciamos una lista de capas.
             Random aleatorizacion = new Random();// instanciamos un objeto de aleatorizacion.
-            for (int i = 0; i < neuronasPorCapa.Length; i++)//iteramos las neuronas por capa
+            for (int i = 0; i < _neuronasPorCapa.Length; i++)//iteramos las neuronas por capa
             {
-                capas.Add(new Capa(i == 0 ? entradas : neuronasPorCapa[i],  neuronasPorCapa.Length - 1 == i ? salida : neuronasPorCapa[i], aleatorizacion));
+                capas.Add(new Capa(_neuronasPorCapa[i], i == 0 ? _neuronasPorCapa[i] : _neuronasPorCapa[i - 1], aleatorizacion));
             }
         }
         /// <summary>
