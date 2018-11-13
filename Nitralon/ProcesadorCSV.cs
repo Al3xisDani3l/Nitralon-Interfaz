@@ -19,13 +19,24 @@ namespace Nitralon
         private double valorMinE = 999999;
         private double valorMaxS = -99999;
         private double valorMinS = 99999;
+        private bool ConfirmacionDeLectura = false;
         public DataTable DataTable
         {
             get
             {
-                return Buffer(Entradas, Salidas);
+                if (ConfirmacionDeLectura)
+                {
+                    return Buffer(Entradas, Salidas);
+                }
+                else
+                {
+                    return new DataTable();
+                }
+               
             }
         }
+
+        private double[] salidaMaxForFilas;
 
         public int ConteoDeEntradas { get => conteoDeEntradas; set => conteoDeEntradas = value; }
         public int ConteoDeSalidas { get => conteoDeSalidas; set => conteoDeSalidas = value; }
@@ -35,6 +46,7 @@ namespace Nitralon
         public double ValorMinE { get => valorMinE; set => valorMinE = value; }
         public double ValorMaxS { get => valorMaxS; set => valorMaxS = value; }
         public double ValorMinS { get => valorMinS; set => valorMinS = value; }
+        public double[] SalidaMaxForFilas { get => salidaMaxForFilas; set => salidaMaxForFilas = value; }
 
         private int conteoDeEntradas = 0;// entero que lleva la cuenta de entradas.
         private int conteoDeSalidas = 0;// entero que lleva la cuenta de salidas
@@ -62,61 +74,65 @@ namespace Nitralon
 
 
 
-
-            string _datosBuffer = File.ReadAllText(archivo.FileName).Replace("\r", "").Trim();// leemos los datos y eliminamos todos los retornos de carro y los caracteres de espacio al principio y final del la fila, despues lo aguardamos en un buffer.
-            string[] filasBuffer = _datosBuffer.Split(Environment.NewLine.ToCharArray()); //convertimos el buffer en lineas conforme al entorno y despues guardamos cada linea en una matriz de cadenas.
-
-            string[] dataBuffer = filasBuffer[0].Split(';');// convertimos solo la primera fila, para poder determinar entradas y salidas
-
-            for (int i = 0; i < dataBuffer.Length; i++)//
+            try
             {
-                if (dataBuffer[i] == "Entrada" || dataBuffer[i] == "entrada" || dataBuffer[i] == "ENTRADA")
+                string _datosBuffer = File.ReadAllText(archivo.FileName).Replace("\r", "").Trim();
+
+                string[] filasBuffer = _datosBuffer.Split(Environment.NewLine.ToCharArray()); //convertimos el buffer en lineas conforme al entorno y despues guardamos cada linea en una matriz de cadenas.
+
+                string[] dataBuffer = filasBuffer[0].Split(';');// convertimos solo la primera fila, para poder determinar entradas y salidas
+
+                for (int i = 0; i < dataBuffer.Length; i++)//
                 {
-                    conteoDeEntradas += 1;// si coincide con una entrada agregamos 1 a la cuenta
-
-
-                }
-                else if (dataBuffer[i] == "Salida" || dataBuffer[i] == "salida" || dataBuffer[i] == "SALIDA")
-                {
-                    conteoDeSalidas += 1;// si coincide con una salida agregamos 1 a la cuenta.
-
-                }
-            }
-
-
-            for (int i = 1; i < filasBuffer.Length; i++)
-            {
-                string[] matrixBuffer = filasBuffer[i].Split(';');
-
-                for (int j = 0; j < conteoDeEntradas + conteoDeSalidas; j++)
-                {
-                    if (j < conteoDeEntradas)
+                    if (dataBuffer[i] == "Entrada" || dataBuffer[i] == "entrada" || dataBuffer[i] == "ENTRADA")
                     {
-                        if (double.Parse(matrixBuffer[j]) > ValorMaxE)
-                        {
-                            ValorMaxE = double.Parse(matrixBuffer[j]);
-                            if (double.Parse(matrixBuffer[j]) < ValorMinE)
-                            {
-                                ValorMinE = double.Parse(matrixBuffer[j]);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (double.Parse(matrixBuffer[j]) > ValorMaxS)
-                        {
-                            ValorMaxS = double.Parse(matrixBuffer[j]);
-                            if (double.Parse(matrixBuffer[j]) < ValorMinS)
-                            {
-                                ValorMinS = double.Parse(matrixBuffer[j]);
-                            }
-                        }
+                        conteoDeEntradas += 1;// si coincide con una entrada agregamos 1 a la cuenta
+
 
                     }
-                    
+                    else if (dataBuffer[i] == "Salida" || dataBuffer[i] == "salida" || dataBuffer[i] == "SALIDA")
+                    {
+                        conteoDeSalidas += 1;// si coincide con una salida agregamos 1 a la cuenta.
 
+                    }
                 }
-            }
+
+                salidaMaxForFilas = new double[ConteoDeSalidas];
+
+                for (int i = 1; i < filasBuffer.Length; i++)
+                {
+                    string[] matrixBuffer = filasBuffer[i].Split(';');
+
+                    for (int j = 0; j < conteoDeEntradas + conteoDeSalidas; j++)
+                    {
+
+                        if (j < conteoDeEntradas)
+                        {
+                            if (double.Parse(matrixBuffer[j]) > ValorMaxE)
+                            {
+                                ValorMaxE = double.Parse(matrixBuffer[j]);
+                                if (double.Parse(matrixBuffer[j]) < ValorMinE)
+                                {
+                                    ValorMinE = double.Parse(matrixBuffer[j]);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (double.Parse(matrixBuffer[j]) > ValorMaxS)
+                            {
+                                ValorMaxS = double.Parse(matrixBuffer[j]);
+                                if (double.Parse(matrixBuffer[j]) < ValorMinS)
+                                {
+                                    ValorMinS = double.Parse(matrixBuffer[j]);
+                                }
+                            }
+
+                        }
+
+
+                    }
+                }
 
 
                 for (int i = 1; i < filasBuffer.Length; i++)// iteneramos empezando de la fila 2 para solo leer los datos y no las descripciones.
@@ -130,17 +146,31 @@ namespace Nitralon
                     {
                         if (j < conteoDeEntradas)// Si j es menor que entradas, entonces es una entrada
                         {
-                            entradas[j] = Normalize(double.Parse(matrixBuffer[j]), ValorMinE, ValorMaxE); // Normalizamos el numero
+                            entradas[j] = Normalize(Convert.ToDouble(matrixBuffer[j]), ValorMinE, ValorMaxE); // Normalizamos el numero
                         }
                         else //si j mayor que _entradas entonces es una salida.
                         {
-                            salidas[j - conteoDeEntradas] = Normalize(double.Parse(matrixBuffer[j]), ValorMinS, ValorMaxS); //Normalizamos el numero
+                            salidas[j - conteoDeEntradas] = Normalize(Convert.ToDouble(matrixBuffer[j]), ValorMinS, ValorMaxS); //Normalizamos el numero
                         }
                     }
 
                     Entradas.Add(entradas);//agregamos la matriz de entradas-n a la lista
                     Salidas.Add(salidas);//agregamos la matriz de salidas-n a la lista
                 }
+
+                ConfirmacionDeLectura = true;
+
+            }
+            catch (Exception a)
+            {
+                ConfirmacionDeLectura = false;
+                MessageBox.Show(string.Format("No se pudo tener acceso al archivo : {0}", a.Message));
+                return;
+            }
+           
+            
+            // leemos los datos y eliminamos todos los retornos de carro y los caracteres de espacio al principio y final del la fila, despues lo aguardamos en un buffer.
+           
             }
 
 
@@ -317,12 +347,13 @@ namespace Nitralon
             }
 
 
-            static double Normalize(double valor, double min, double maximo)
+         public static double Normalize(double valor, double min, double maximo)
             {
-                return (valor - min) / (maximo - min);
+                        double buf = ((valor - min) / (maximo - min));
+                        return buf;
 
             }
-            static double InverseNormalize(double valor, double min, double maximo)
+         public static double InverseNormalize(double valor, double min, double maximo)
             {
                 return valor * (maximo - min) + min;
             }

@@ -1,9 +1,11 @@
 ﻿<Application x:Class="Nitralon.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+          
              xmlns:local="clr-namespace:Nitralon"
              xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
-             StartupUri="Prueba.xaml">
+             StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

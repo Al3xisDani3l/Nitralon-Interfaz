@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Nitralon
 {   [Serializable] // Atributo necesario para guardar el estado de la capa.
-    class Capa
+  public  class Capa
     {
         #region Variables
         /// <summary>

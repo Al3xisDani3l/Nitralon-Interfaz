@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data;
+using System.ComponentModel;
 
 
 namespace Nitralon
@@ -16,50 +17,6 @@ namespace Nitralon
         Automatico,
         Semiautomatico,
         manual
-    }
-
-
-    [Serializable]
-    class Binary
-    {
-        private Percepcion _perceptron;
-
-        private Configuracion _Configuracion;
-
-        public Percepcion perceptron
-        {
-            get
-            {
-                if (_perceptron != null)
-                {
-                    return _perceptron;
-                }
-                return null;
-              
-            }
-            set
-            {
-             
-                this._perceptron = value;
-            }
-        }
-
-        public Configuracion configuracion
-        {
-            get
-            {
-                if (configuracion != null)
-                {
-                    return configuracion;
-                }
-                return new Configuracion();
-            }
-            set
-            {
-                _Configuracion = value;
-            }
-        }
-
     }
     [Serializable]
     public class Configuracion
@@ -77,9 +34,12 @@ namespace Nitralon
         private List<double[]> datosDeEntrada = new List<double[]>();
         private List<double[]> datosDeSalida = new List<double[]>();
         private int[] neurnasPorCapa;
-        private int ciclosDeInteraccion;
-        private double errorAceptable;
-        private double saltosDelta;
+        private int ciclosDeInteraccion = 100000;
+        private double errorAceptable = 0.001;
+        private double saltosDelta = 0.25;
+        private int capas;
+
+
         
 
         public int Entradas { get => entradas; set => entradas = value; }
@@ -90,12 +50,13 @@ namespace Nitralon
         public DataTable DataTable { get => dataTable; set => dataTable = value; }
         public List<double[]> DatosDeEntrada { get => datosDeEntrada; set => datosDeEntrada = value; }
         public List<double[]> DatosDeSalida { get => datosDeSalida; set => datosDeSalida = value; }
-        public double ValorMaxEntrada { get => valorMaxEntrada; set => valorMaxEntrada = value; }
+        public double ValorMaxEntradas { get => valorMaxEntrada; set => valorMaxEntrada = value; }
         public double ValorMinEntradas { get => valorMinEntradas; set => valorMinEntradas = value; }
         public int[] NeurnasPorCapa { get => neurnasPorCapa; set => neurnasPorCapa = value; }
         public int CiclosDeInteraccion { get => ciclosDeInteraccion; set => ciclosDeInteraccion = value; }
         public double ErrorAceptable { get => errorAceptable; set => errorAceptable = value; }
         public double SaltosDelta { get => saltosDelta; set => saltosDelta = value; }
+        public int Capas { get => capas; set => capas = value; }
     }
 
 

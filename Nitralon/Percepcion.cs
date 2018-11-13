@@ -3,23 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Nitralon
 {
     [Serializable]
-    class Percepcion
+  public  class Percepcion
     {
         #region Variables
-      private List<Capa> capas;// lista de capas
+      public List<Capa> capas;// lista de capas
       private List<double[]> sigmas;// lista de matrices doubles de sigmas.
       private List<double[,]> deltas;// lista de matrices bidimencionales de deltas.
       public double Error { get; private set; } = 99999;
-
-
-
+      public bool Entrenar = false;
         #endregion
 
-      public  event EventHandler<MarcadoresDeErrorEventArgs> MarcadorDeError;
+      
+
+        
+
 
         /// <summary>
         /// Controla la interaccion, inicializacion y entrenamiento de las neuronas.
@@ -85,30 +87,78 @@ namespace Nitralon
         /// <param name="errorAceptable">Porcentaje de error hasta que se considere que la red aprendio</param>
         /// <param name="factorPasos"> factor que establece que en que tanto se debe avanzar hasta llegar al minimo local.</param>
         /// <returns></returns>
-        public bool Entrenamiento(List<double[]> entradas, List<double[]> salidasDeseadas, double intercciones, double errorAceptable, double factorPasos)
+        public bool  Entrenamiento(List<double[]> entradas, List<double[]> salidasDeseadas, double intercciones, double errorAceptable, double factorPasos,CancellationToken token )
         {
-          // iniciamos el error con un numero muy grande para que no haiga manera de que se saltee el entrenamiento.
-            while (Error > errorAceptable)
-            {
-                MarcadoresDeErrorEventArgs errorEventArgs = new MarcadoresDeErrorEventArgs();
-                intercciones--;
-
-                if (intercciones <= 0)
+            double bufferinteracciones = 0;
+            // iniciamos el error con un numero muy grande para que no haiga manera de que se saltee el entrenamiento.
+         
+                while (Error > errorAceptable)
                 {
-                    return false;
-                }
-                RetroPropagacion(entradas, salidasDeseadas, factorPasos);
-                Error = ErrorGeneral(entradas, salidasDeseadas);
-                if (intercciones % 1000 == 0)
-                {
-                    errorEventArgs.Interacciones = intercciones;
-                    errorEventArgs.Error = Error;
+                    if (token.IsCancellationRequested)
+                    {
+                        break;
+                    }
 
-                    OnMarcadorDeError(this, errorEventArgs);
-                 
-                }
+                    MarcadoresDeErrorEventArgs errorEventArgs = new MarcadoresDeErrorEventArgs();
+                    intercciones--;
+                    bufferinteracciones++;
 
-            }
+                    if (intercciones <= 0)
+                    {
+                        return false;
+                    }
+                    RetroPropagacion(entradas, salidasDeseadas, factorPasos);
+                    Error = ErrorGeneral(entradas, salidasDeseadas);
+
+                    if ((Error - errorAceptable) <= 0.000001d)
+                    {
+                        errorEventArgs.Interacciones = bufferinteracciones;
+                        errorEventArgs.Error = Error;
+                        OnMarcadorDeError(this, errorEventArgs);
+                    }
+                    else
+                    {
+                        if (bufferinteracciones < 10)
+                        {
+                            errorEventArgs.Interacciones = bufferinteracciones;
+                            errorEventArgs.Error = Error;
+
+                            OnMarcadorDeError(this, errorEventArgs);
+                        }
+                        else if (bufferinteracciones > 10 && bufferinteracciones <= 100)
+                        {
+                            if (bufferinteracciones % 10 == 0)
+                            {
+                                errorEventArgs.Interacciones = bufferinteracciones;
+                                errorEventArgs.Error = Error;
+
+                                OnMarcadorDeError(this, errorEventArgs);
+                            }
+
+                        }
+                        else
+                        {
+                            if (bufferinteracciones % 100 == 0)
+                            {
+                                errorEventArgs.Interacciones = bufferinteracciones;
+                                errorEventArgs.Error = Error;
+
+                                OnMarcadorDeError(this, errorEventArgs);
+                            }
+                        }
+                    }
+
+
+
+
+
+
+
+
+
+                }
+            
+           
             return true;
         }
         #region Funciones internas
@@ -173,7 +223,11 @@ namespace Nitralon
                 sigmas.Add(new double[capas[i].numeroDeNeuronas]);// instanciamos nuevas matrices de dobles con el tamaño igual a la cantidad de neuronas de la capa en cuestion.
             }
 
-            for (int i = capas.Count - 1; i >= 0; i--) // iteramos desde la ultima capa y nos detenemos en la primera.
+
+
+
+
+            for (int i = capas.Count - 1; i > 0; i--) // iteramos desde la ultima capa y nos detenemos en la primera.
             {
                 for (int j = 0; j < capas[i].numeroDeNeuronas; j++)// iteramos todas las neuronas de la capa en cuestion.        
                 {
@@ -213,13 +267,18 @@ namespace Nitralon
         /// </summary>
         private void AgregarDeltas()
         {
-            for (int i = 0; i < capas.Count; i++)//itera las capas
+            for (int i = 1; i < capas.Count; i++)//itera las capas
             {
-                for (int k = 0; k < capas[i].numeroDeNeuronas; k++)//itera las neuronas
+                for (int j = 0; j < capas[i].numeroDeNeuronas; j++)//itera las neuronas
                 {
-                    for (int j = 0; j < capas[i].neuronas[j].pesos.Length; j++)//itera los pesos
+                    for (int k = 0; k < capas[i].neuronas[j].pesos.Length; k++)//itera los pesos
                     {
-                        deltas[i][j, k] += sigmas[i][j] * Neurona.Sigmoidea(capas[i - 1].neuronas[k].activacionPasada);
+                        double t = sigmas[i][j];
+                        double u = capas[i - 1].neuronas[k].activacionPasada;
+                        double p = t * Neurona.Sigmoidea(u);
+                        deltas[i][j, k] += p;
+
+                        //deltas[i][j, k] += sigmas[i][j] * Neurona.Sigmoidea(capas[i - 1].neuronas[k].activacionPasada);
                     }
                 }
             }
@@ -256,7 +315,8 @@ namespace Nitralon
             }
         }
         #endregion
-
+        
+        public event EventHandler<MarcadoresDeErrorEventArgs> MarcadorDeError;
         protected virtual void OnMarcadorDeError(object o, MarcadoresDeErrorEventArgs e)
         {
             MarcadorDeError?.Invoke(o, e);
@@ -265,7 +325,7 @@ namespace Nitralon
 
 
     }
-
+    [Serializable]
     public class MarcadoresDeErrorEventArgs : EventArgs
     {
         public double Interacciones { get; set; }

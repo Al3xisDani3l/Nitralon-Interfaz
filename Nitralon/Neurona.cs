@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Nitralon
 {   
     [Serializable] // Atributo necesario para poder guardar el estado de la neurona
-    class Neurona
+ public class Neurona
     {
         #region Variables
         /// <summary>
