@@ -36,7 +36,7 @@ namespace Nitralon
     /// <summary>
     /// Lógica de interacción para MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, IDisposable
     {
 
         #region Variables
@@ -84,6 +84,8 @@ namespace Nitralon
         /// Objeto que propaga la cancelacion de los procedimientos asincronos
         /// </summary>
         private CancellationToken token;
+
+        bool disposed;
         #endregion
 
       
@@ -701,13 +703,18 @@ namespace Nitralon
             {
                 entradas[i] = ProcesadorCSV.Normalize(Convert.ToDouble(textBoxesEntradas[i].Text), configuracion.ValorMinEntradas, configuracion.ValorMaxEntradas);
             }
+            if (perceptron == null)
+            {
+                MessageBox.Show("No se ha configurado ningun perceptron, configure o habra un previo entrenamiento");
+                return;
+            }
 
          double[] salidas = perceptron.Activacion(entradas);
 
             for (int i = 0; i < configuracion.Salidas; i++)
             {
                 TextBlock salida = new TextBlock();
-                salida.Text = string.Format("Salida {0} : {1}", i + 1, ProcesadorCSV.InverseNormalize(salidas[i], configuracion.ValorMinSalida,configuracion.ValorMaxSalida));
+                salida.Text = string.Format("Salida {0} : {1}", i + 1, ProcesadorCSV.InverseNormalize(salidas[i],configuracion.ValorMinSalida, configuracion.ValorMaxSalida));
                 salida.FontSize = 40;
                 salida.Margin = new Thickness(15, 10, 10, 10);
                salida.Foreground = new SolidColorBrush(Color.FromRgb(19,143,19));
@@ -731,6 +738,7 @@ namespace Nitralon
                 EstablecerControles(configuracion);
                 txt_Capas.TextChanged -= txt_Capas_TextChanged;
                 txt_Capas.Text = configuracion.Capas.ToString();
+               
                 foreach (TextBox item in textBoxesConfiguracion)
                 {
                     item.TextChanged -= Text_TextChanged;
@@ -793,6 +801,7 @@ namespace Nitralon
 
             Rednn rednn = new Rednn();
             perceptron.MarcadorDeError -= Perceptron_MarcadorDeError;
+          
             rednn.Configuracion = configuracion;
             rednn.Percepcion = perceptron;
 
@@ -1216,6 +1225,7 @@ namespace Nitralon
             txt_ValorMinimo.Text = configuraciones.ValorMinSalida.ToString();
             txt_CantidadEntradas.Text = configuraciones.Entradas.ToString();
             txt_CantidadSalidas.Text = configuraciones.Salidas.ToString();
+            DataGridCSV.ItemsSource = configuracion.DataTable.DefaultView;
             Menus(configuraciones.ModoDeEscaneo);
             txt_Interacciones.Text = configuraciones.CiclosDeInteraccion.ToString();
             txt_ErrorAceptable.Text = configuraciones.ErrorAceptable.ToString();
@@ -1223,7 +1233,24 @@ namespace Nitralon
             GeneradorDeES(configuraciones.Entradas, configuraciones.Salidas);
         }
 
-      
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool dispose)
+        {
+            if (!this.disposed)
+            {
+                if (null != this.tokenSource)
+                {
+                    this.tokenSource.Dispose();
+                    this.tokenSource = null;
+                }
+                this.disposed = true;
+            }
+        }
+
 
 
 

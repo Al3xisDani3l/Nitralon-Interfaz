@@ -23,6 +23,7 @@ namespace Nitralon.Graficos
     /// <summary>
     /// Lógica de interacción para GraficoCalidadLow.xaml
     /// </summary>
+    [Serializable]
     public partial class GraficoCalidadLow : UserControl, INotifyPropertyChanged
     {
         double _MaxValueX = 10;

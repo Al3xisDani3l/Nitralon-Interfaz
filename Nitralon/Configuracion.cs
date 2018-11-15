@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data;
 using System.ComponentModel;
+using Nitralon.Graficos;
 
 
 namespace Nitralon
@@ -38,6 +39,8 @@ namespace Nitralon
         private double errorAceptable = 0.001;
         private double saltosDelta = 0.25;
         private int capas;
+      
+
 
 
         
@@ -57,6 +60,7 @@ namespace Nitralon
         public double ErrorAceptable { get => errorAceptable; set => errorAceptable = value; }
         public double SaltosDelta { get => saltosDelta; set => saltosDelta = value; }
         public int Capas { get => capas; set => capas = value; }
+       
     }
 
 

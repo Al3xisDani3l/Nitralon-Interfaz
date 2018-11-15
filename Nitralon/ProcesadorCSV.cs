@@ -151,6 +151,7 @@ namespace Nitralon
                         else //si j mayor que _entradas entonces es una salida.
                         {
                             salidas[j - conteoDeEntradas] = Normalize(Convert.ToDouble(matrixBuffer[j]), ValorMinS, ValorMaxS); //Normalizamos el numero
+                            //salidas[j - conteoDeEntradas] = Convert.ToDouble(matrixBuffer[j]);
                         }
                     }
 
