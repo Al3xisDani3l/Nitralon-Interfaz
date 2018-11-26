@@ -7,8 +7,12 @@ using System.Threading;
 
 namespace Nitralon
 {
+
+    /// <summary>
+    /// 
+    /// </summary>
     [Serializable]
-  public  class Percepcion
+    public  class Percepcion
     {
         #region Variables
       public List<Capa> capas;// lista de capas
@@ -315,9 +319,13 @@ namespace Nitralon
             }
         }
         #endregion
-        
+
+#pragma warning disable CS1591 // Falta el comentario XML para el tipo o miembro visible públicamente
         public event EventHandler<MarcadoresDeErrorEventArgs> MarcadorDeError;
+#pragma warning restore CS1591 // Falta el comentario XML para el tipo o miembro visible públicamente
+#pragma warning disable CS1591 // Falta el comentario XML para el tipo o miembro visible públicamente
         protected virtual void OnMarcadorDeError(object o, MarcadoresDeErrorEventArgs e)
+#pragma warning restore CS1591 // Falta el comentario XML para el tipo o miembro visible públicamente
         {
             MarcadorDeError?.Invoke(o, e);
         }
@@ -325,10 +333,19 @@ namespace Nitralon
 
 
     }
+    /// <summary>
+    /// Representa el ruteo de informacion para los informes de avanze de la clase perceptron.
+    /// </summary>
     [Serializable]
     public class MarcadoresDeErrorEventArgs : EventArgs
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public double Interacciones { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public double Error { get; set; }
 
     }

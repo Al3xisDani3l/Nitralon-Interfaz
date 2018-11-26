@@ -26,6 +26,12 @@ using System.ComponentModel;
 using System.Threading;
 using Nitralon.Graficos;
 
+//   Proyecto final para calculo I
+//   Interfaz diseñada por Melissa Jazmin Carrera Ramos
+//   Algoritmo de la red neuronal diseñada por Alexis Daniel.
+//   Presentacion powerpoint adjunta al proyecto, diseñada por Melissa.
+//   Derecho libre de distribucion, copia y modificacion del codigo, siempre y cuando se realize una referencia a la autoria.
+//   Este codigo utiliza libreria de terceros.
 
 namespace Nitralon
 {

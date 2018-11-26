@@ -14,17 +14,30 @@ namespace Nitralon
     /// Define los comportamientos de lectura que recibira el archivo CSV
     /// </summary>
     public enum Modo
-    {
+    {   
+        /// <summary>
+        /// Analiza el archivo csv, determinando sus configuraciones automaticamente.
+        /// </summary>
         Automatico,
+        /// <summary>
+        /// Analiza el archivo csv, determinando solo sus valores maximos minimos automaticamente.
+        /// </summary>
         Semiautomatico,
+        /// <summary>
+        /// Todo el analizis, se calculara manualmente.
+        /// </summary>
         manual
     }
+    /// <summary>
+    /// Representa las configuraciones de toda la aplicacion, aporta
+    /// utilidad como intermediario entre las distintas clases.
+    /// Tiene soporte para la serializacion y administracion de datos despues del ciclo de vida de la app.
+    /// </summary>
     [Serializable]
     public class Configuracion
     {
 
         private Modo modo = Modo.Automatico;
-
         private int entradas = 1;
         private int salidas = 1;
         private double valorMaxSalida = 1;

@@ -97,7 +97,7 @@ namespace Nitralon
                     }
                 }
 
-                salidaMaxForFilas = new double[ConteoDeSalidas];
+           
 
                 for (int i = 1; i < filasBuffer.Length; i++)
                 {
@@ -111,10 +111,10 @@ namespace Nitralon
                             if (double.Parse(matrixBuffer[j]) > ValorMaxE)
                             {
                                 ValorMaxE = double.Parse(matrixBuffer[j]);
-                                if (double.Parse(matrixBuffer[j]) < ValorMinE)
-                                {
-                                    ValorMinE = double.Parse(matrixBuffer[j]);
-                                }
+                            }
+                            if (double.Parse(matrixBuffer[j]) < ValorMinE)
+                            {
+                                ValorMinE = double.Parse(matrixBuffer[j]);
                             }
                         }
                         else
@@ -122,12 +122,11 @@ namespace Nitralon
                             if (double.Parse(matrixBuffer[j]) > ValorMaxS)
                             {
                                 ValorMaxS = double.Parse(matrixBuffer[j]);
-                                if (double.Parse(matrixBuffer[j]) < ValorMinS)
-                                {
-                                    ValorMinS = double.Parse(matrixBuffer[j]);
-                                }
                             }
-
+                            if (double.Parse(matrixBuffer[j]) < ValorMinS)
+                            {
+                                ValorMinS = double.Parse(matrixBuffer[j]);
+                            }
                         }
 
 
@@ -299,7 +298,12 @@ namespace Nitralon
 
 
             }
-
+            /// <summary>
+            /// Convierte una serie de listas en el formato dataTable para su posterior representracion.
+            /// </summary>
+            /// <param name="entradas"></param>
+            /// <param name="salidas"></param>
+            /// <returns></returns>
             private DataTable Buffer(List<double[]> entradas, List<double[]> salidas)
             {
                 DataTable buff = new DataTable("Datos");
@@ -347,14 +351,27 @@ namespace Nitralon
 
             }
 
-
-         public static double Normalize(double valor, double min, double maximo)
+            /// <summary>
+            /// Normaliza los valores para dejarlos entre valores comprendidos entre 0 y 1.
+            /// </summary>
+            /// <param name="valor"></param>
+            /// <param name="min"></param>
+            /// <param name="maximo"></param>
+            /// <returns></returns>
+            public static double Normalize(double valor, double min, double maximo)
             {
                         double buf = ((valor - min) / (maximo - min));
                         return buf;
 
             }
-         public static double InverseNormalize(double valor, double min, double maximo)
+            /// <summary>
+            /// Inversa
+            /// </summary>
+            /// <param name="valor"></param>
+            /// <param name="min"></param>
+            /// <param name="maximo"></param>
+            /// <returns></returns>
+            public static double InverseNormalize(double valor, double min, double maximo)
             {
                 return valor * (maximo - min) + min;
             }

@@ -9,16 +9,24 @@ using System.Windows.Interop;
 
 namespace Nitralon
 {
+    /// <summary>
+    ///  Representa un objeto capas de interactuar con la interfaz y generar un efeto blur en la ventana.
+    /// </summary>
     class Fluent
     {
-
+      /// <summary>
+      /// Procedimiento que activa el efecto blur.
+      /// </summary>
+      /// <param name="window">Venta actual al cual se le quiere aplicar el efecto blur</param>
       public  static void ActivarTransparencia(Window window)
-        {
+       {
             NativeMethods.EnableBlur(window);
-        }
+       }
 
     }
-
+    /// <summary>
+    /// NativeMethods, clase de seguridad.
+    /// </summary>
     internal static class NativeMethods
     {
         [DllImport("user32.dll")]

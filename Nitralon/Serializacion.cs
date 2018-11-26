@@ -13,7 +13,13 @@ namespace Nitralon
 {   
     class Serializacion
     {
-      public  static bool Serializar(object objeto, SaveFileDialog Direccion )
+        /// <summary>
+        /// Serializa un objeto enmarcado con el atributo "[Serializable]" en la direccion especificada.
+        /// </summary>
+        /// <param name="objeto">Objeto a serializar.</param>
+        /// <param name="Direccion">SaveFileDialog que porta la direccion donde se guardara el archivo.</param>
+        /// <returns>True si la operacion fue exitosa, false de lo contrario</returns>
+        public  static bool Serializar(object objeto, SaveFileDialog Direccion )
         {
             FileStream fileStream = new FileStream(Direccion.FileName, FileMode.Create,FileAccess.Write);
             BinaryFormatter formateador = new BinaryFormatter();
@@ -36,7 +42,11 @@ namespace Nitralon
                 
             }
         }
-
+        /// <summary>
+        /// Serializa un objeto en el path donde se ejecuta la aplicacion, con el nombre Data.neuron
+        /// </summary>
+        /// <param name="objeto">Objeto a serializar</param>
+        /// <returns>True si la serializacion fue exitosa, de lo contrario false</returns>
         public static bool Serializar(object objeto)
         {
             FileStream fileStream = new FileStream(Directory.GetCurrentDirectory() + @"\Data.neuron" , FileMode.Create);
@@ -59,11 +69,12 @@ namespace Nitralon
 
             }
         }
-
-
-
-
-
+        /// <summary>
+        /// Deserializa un archivo y lo convierte al tipo deseado.
+        /// </summary>
+        /// <typeparam name="Tipo">Tipo en que se convertira el archivo serializado, este debe ser compatible con el tipo.</typeparam>
+        /// <param name="archivo">OpenFileDialog que porta la ubicacion del archivo a serializar.</param>
+        /// <returns>Tipo</returns>
         public static Tipo Deserializar<Tipo>(OpenFileDialog archivo) where Tipo : new()
         {
             FileStream fileStream = new FileStream(archivo.FileName, FileMode.Open, FileAccess.Read);
@@ -105,11 +116,11 @@ namespace Nitralon
 
         }
         /// <summary>
-        /// 
+        ///  Deserializa un archivo ubicado en el path del ejecutable, Data.neuron, en caso de que no se encuentre, devuelve una nueva instancia del Tipo.
         /// </summary>
         /// <typeparam name="Tipo"></typeparam>
         /// <param name="objeto"></param>
-        /// <returns></returns>
+        /// <returns>True si la operacion fue exitosa, de lo contrario false.</returns>
         public static bool Deserializar<Tipo> (ref Tipo objeto) where Tipo : new()
         {
 
@@ -150,10 +161,12 @@ namespace Nitralon
 
             finally
             {
-              
+               
             }
 
 
         }
+
+      
     }
 }

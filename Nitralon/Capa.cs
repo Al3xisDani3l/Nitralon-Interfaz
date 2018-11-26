@@ -48,7 +48,7 @@ namespace Nitralon
         /// <summary>
         /// Devuelve una matriz con las salidas producidas por cada neurona.
         /// </summary>
-        /// <param name="Entradas">Las entradas son las salidas de la capa anterior</param>
+        /// <param name="entradas">Las entradas son las salidas de la capa anterior</param>
         /// <returns></returns>
         public double[] Activacion(double[] entradas)
         {
