@@ -5,10 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Nitralon
-{   
-    [Serializable] // Atributo necesario para poder guardar el estado de la neurona
-    class Neurona
-    {
+{  
+  ///<summary>
+  ///Representa la unidad minima de procesamiento neural, emula su analogo biologico.
+  /// </summary>  
+  [Serializable]
+  public class Neurona
+  {
         #region Variables
         /// <summary>
         /// Matriz de pesos para cada neurona creada.
@@ -58,18 +61,18 @@ namespace Nitralon
 
         }
         /// <summary>
-        /// Funcion de activacion que se pronuncia muncho cuando se aleja del 0.
+        /// Funcion de activacion que se pronuncia muncho cuando se aleja del 0, funcion sigmoidea
         /// </summary>
-        /// <param name="entrada"> valor x </param>
+        /// <param name="entrada"> valor de entrada, Variable independiente </param>
         /// <returns></returns>
         public static double Sigmoidea(double entrada)
         {
             return 1 / (1 + Math.Exp(-entrada));
         }
         /// <summary>
-        /// Deriva la sigmoidea para poder encontrar el minimo local, todo con el fin de encontrar el error minimo.
+        /// Devuelve la deriva con respecto a un punto de la sigmoidea.
         /// </summary>
-        /// <param name="entrada"></param>
+        /// <param name="entrada">Valor de entrada</param>
         /// <returns></returns>
         public static double DerivadaSigmoidea(double entrada)
         {

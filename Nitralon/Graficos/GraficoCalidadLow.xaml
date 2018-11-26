@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="Nitralon.Graficos.GraficoCalidadLow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Nitralon.Graficos"
+             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+   
+    <Grid>
+        <Grid.Resources>
+            <Style TargetType="lvc:Separator">
+                <Setter Property="Stroke" Value="Green"/>
+                <Setter Property="StrokeThickness" Value=".8"/>
+                <Setter Property="StrokeDashArray" Value="2"/>
+            </Style>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <lvc:CartesianChart Grid.Row="1"
+                            DisableAnimations="True"
+                            DataTooltip="{x:Null}"
+                            Zoom="Xy">
+            <lvc:CartesianChart.Series>
+                <lvc:LineSeries Values="{Binding Values}" PointGeometry="{x:Null}" Stroke="Green" Fill="#19008000"></lvc:LineSeries>
+            </lvc:CartesianChart.Series>
+            <lvc:CartesianChart.AxisX>
+                <lvc:Axis MinValue="0" MaxValue="{Binding MaxValueX}"/>
+            </lvc:CartesianChart.AxisX>
+            <lvc:CartesianChart.AxisY>
+                <lvc:Axis MinValue="0" MaxValue="{Binding MaxValueY}" />
+            </lvc:CartesianChart.AxisY>
+         
+            
+        </lvc:CartesianChart>
+        
+    </Grid>
+</UserControl>
